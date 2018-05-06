@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jquery": "^3.3.1",
     "pubsub-js": "^1.6.0",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.1.2"
