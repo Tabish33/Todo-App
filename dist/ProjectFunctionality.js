@@ -1,19 +1,30 @@
 const Projects = ( () => {
 
     let projects = {};
+    let current_project ;
 
     const addProject = (project_name,obj) => {
       projects[project_name] = obj;
+      PubSub.publish("add project",project_name);
     }
 
     const removeProject = (project_name) => {
       delete projects[project_name];
     }
 
-    const getProjects = () => {
-      return projects;
+    const getProject = (p_name) => {
+      return projects[p_name];
     }
-    return {addProject,removeProject,getProjects};
+
+    const setCurrentProject = (cp) => {
+      current_project =   cp;
+    };
+
+    const getCurrentProject = () => {
+      return current_project;
+    }
+
+    return {addProject,removeProject,getProject,setCurrentProject,getCurrentProject};
 
 } )();
 
@@ -26,6 +37,7 @@ const Project = (project_name) => {
 
     const addTodo = (todo_name,obj) => {
       Todos[todo_name] = obj;
+      PubSub.publish("add todo",[project_name,todo_name]);
     }
 
     const removeTodo = (todo_name) => {
@@ -46,18 +58,10 @@ const Project = (project_name) => {
 
 
 
-const ToDo = () => {
+const ToDo = (title,description) => {
 
-    let Title;
-    let Description;
-
-    const setTitle = (title) => {
-      Title = title;
-    }
-
-    const setDescription = (description) => {
-      Description = description;
-    }
+    let Title = title;
+    let Description = description;
 
     const getTitle = () => {
       return Title;
@@ -67,7 +71,7 @@ const ToDo = () => {
       return Description;
     }
 
-    return {setTitle,setDescription,getTitle,getName};
+    return {getTitle,getDescription};
 };
 
 export {Projects,Project,ToDo};
