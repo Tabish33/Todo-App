@@ -24,28 +24,26 @@ const Render = ( () => {
       })
     })();
 
-    const viewProjects = (project) => {
-      let p_name = project.getName();
-      $(".sidebar").append(`<div data-id="${p_name}" class="project"><p
-                              class="${p_name}">${p_name}</p></div>`);
-      viewTodos();
-    };
+    const viewProjects = (() => {
 
-    const viewTodos = () => {
+      PubSub.subscribe('add project',(msg,p_name)=>{
+        $(".sidebar").append(`<div class="project ${p_name}"><p
+                                >${p_name}</p></div>`);
+        PubSub.publish("project added");
+      })
+
+    })();
+
+    const viewTodos = (() => {
       const viewOnSidebar = (() => {
-        $('.project p').each(function(){
-          $(this).click(()=>{
-            let name = $(this).attr('class');
-            let project = $(this.parentElement).data('id');
-            Object.keys(Projects.getProjects()[project].getTodos()).forEach(function(){
-              console.log(this);
-            })
-          })
+        PubSub.subscribe("add todo",(msg,data) => {
+          let project_name = data[0] ,  todo_name = data[1];
+          $(`.${project_name}`).append(`<li>${todo_name}</li>`);
         })
       })();
-    };
+    })();
 
-    return {viewProjects};
+    return {};
 } )()
 
 
