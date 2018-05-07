@@ -5,6 +5,7 @@ const Projects = ( () => {
 
     const addProject = (project_name,obj) => {
       projects[project_name] = obj;
+      setCurrentProject(project_name);
       PubSub.publish("add project",project_name);
     }
 
@@ -37,7 +38,7 @@ const Project = (project_name) => {
 
     const addTodo = (todo_name,obj) => {
       Todos[todo_name] = obj;
-      PubSub.publish("add todo",[project_name,todo_name]);
+      PubSub.publish("add todo",[project_name,todo_name,obj]);
     }
 
     const removeTodo = (todo_name) => {
@@ -58,7 +59,7 @@ const Project = (project_name) => {
 
 
 
-const ToDo = (title,description) => {
+const ToDo = (title="",description="") => {
 
     let Title = title;
     let Description = description;
