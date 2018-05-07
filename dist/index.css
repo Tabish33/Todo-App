@@ -30,6 +30,15 @@ nav p {
   background: mistyrose;
 }
 
+.project{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.project > *{
+  flex: 1 1 100%;
+}
+
 .todo-content{
   grid-column: 3/-1;
   grid-row: 2/-1;
@@ -72,6 +81,7 @@ nav p {
   font-weight: bold;
   font-family: Arial;
   font-size: 15px;
+  cursor: pointer;
 }
 
 .project li{
@@ -80,6 +90,7 @@ nav p {
   font-weight: bold;
   font-family: Arial;
   font-size: 15px;
+  cursor: pointer;
 }
 
 .Todo-card{
@@ -89,7 +100,7 @@ nav p {
   background: #f2f2f2;
   grid-template-columns: repeat(12,8.333%);
   grid-template-rows: repeat(12,8.333%);
-  box-shadow: 0 0 34px;
+  box-shadow: 5px 10px 24px;
 }
 
 .close-todo-card{
@@ -204,10 +215,45 @@ textarea:focus{
             outline:0;
         }
 
+button:focus{
+  outline:0;
+}
+
 .set-date-title{
   grid-column: 1/-1;
   grid-row: 6/7;
   font-size: 20px;
   padding-top: 21px;
   font-weight: bold;
+}
+
+.new-project-card{
+  display: none;
+  border:3px solid black;
+  grid-column: 5/span 4;
+  grid-row: 3/span 5;
+}
+
+.close-project-card{
+  justify-self: right;
+}
+
+.new-project-card p{
+  font-weight: bold;
+  font-size: 23px;
+  justify-self: center;
+}
+
+.new-project-card input{
+  padding: 6px 21px;
+  font-size: 20px;
+}
+
+.new-project-card button{
+  border:0;
+  background: #00b33c;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
 }
