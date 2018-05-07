@@ -2,15 +2,18 @@ const Projects = ( () => {
 
     let projects = {};
 
-    const AddProject = (project_name,obj) => {
+    const addProject = (project_name,obj) => {
       projects[project_name] = obj;
     }
 
-    const RemoveProject = (project_name) => {
+    const removeProject = (project_name) => {
       delete projects[project_name];
     }
 
-    return {AddProject,RemoveProject};
+    const getProjects = () => {
+      return projects;
+    }
+    return {addProject,removeProject,getProjects};
 
 } )();
 
@@ -21,11 +24,11 @@ const Project = (project_name) => {
     let name = project_name;
     let Todos = {};
 
-    const AddTodo = (todo_name,obj) => {
+    const addTodo = (todo_name,obj) => {
       Todos[todo_name] = obj;
     }
 
-    const RemoveTodo = (todo_name) => {
+    const removeTodo = (todo_name) => {
       delete Todos[todo_name];
     }
 
@@ -33,7 +36,11 @@ const Project = (project_name) => {
       return name;
     }
 
-    return {AddTodo,RemoveTodo,getName};
+    const getTodos = () => {
+      return Todos;
+    }
+
+    return {addTodo,removeTodo,getName,getTodos};
 
 };
 
@@ -52,7 +59,7 @@ const ToDo = () => {
       Description = description;
     }
 
-    const getTitle = (){
+    const getTitle = () => {
       return Title;
     }
 
