@@ -94,6 +94,7 @@ nav p {
 }
 
 .Todo-card{
+  z-index: 5;
   display: none;
   grid-column: 3/-3;
   grid-row: 2/-2;
@@ -229,6 +230,7 @@ button:focus{
 
 .new-project-card{
   display: none;
+  z-index: 5;
   border:3px solid black;
   grid-column: 5/span 4;
   grid-row: 3/span 5;
@@ -256,4 +258,38 @@ button:focus{
   font-weight: bold;
   font-size: 20px;
   cursor: pointer;
+}
+
+.project-cards{
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(150px,287px));
+  grid-gap: 20px;
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+  overflow-y: scroll;
+}
+.note{
+  max-width: 300px;
+  min-width: 150px;
+  height: 330px;
+  box-shadow: 5px 3px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.note input {
+  flex:0 1 ;
+  border: 0;
+  padding: 11px 12px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.note textarea{
+  flex:1 1 ;
+  border: 0;
+  padding: 11px;
+  resize: none;
+  box-sizing: border-box;
 }
