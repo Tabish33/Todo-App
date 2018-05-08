@@ -38,7 +38,7 @@ const Project = (project_name) => {
 
     const addTodo = (todo_name,obj) => {
       Todos[todo_name] = obj;
-      PubSub.publish("todo added",[project_name,obj]);
+      PubSub.publish("add todo",[project_name,obj]);
     }
 
     const removeTodo = (todo_name) => {
@@ -59,8 +59,9 @@ const Project = (project_name) => {
 
 
 
-const ToDo = (title="",description="",priority) => {
+const ToDo = (title="",description="",priority,parent) => {
 
+    let Parent = parent;
     let Title = title;
     let Description = description;
     let Priority = priority;
@@ -77,7 +78,11 @@ const ToDo = (title="",description="",priority) => {
       return Priority;
     }
 
-    return {getTitle,getDescription,getPriority};
+    const getParent = () => {
+      return Parent;
+    }
+
+    return {getTitle,getDescription,getPriority,getParent};
 };
 
 export {Projects,Project,ToDo};

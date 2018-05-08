@@ -75,24 +75,24 @@ const Render = ( () => {
     const viewTodos = (() => {
 
         const viewOnSidebar = (() => {
-          PubSub.subscribe("todo added",(msg,data) => {
+          PubSub.subscribe("add todo",(msg,data) => {
             let project_name = data[0] ,  todo_name = data[1].getTitle();
-            $(`.${project_name}`).append(`<li>${todo_name}</li>`);
+            $(`.${project_name}`).append(`<li class= "sidebar-note-${todo_name}">${todo_name}</li>`);
           })
         })();
 
-        const appendNoteDetailsHtml = (title,description,priority) => {
+        const appendNoteOptionsHtml = (title,description,priority) => {
           //priority circle and task completion tick
           $(".project-cards").append(`
-            <div class="note">
-              <div class="note-details">
+            <div class="note note-${title}" >
+              <div class="note-options">
                   <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path class="priority-circle ${priority}" class
                     fill="#000000" d="M12,2A10,10 0 0,1 22,12A10,10
                      0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
                   </svg>
                   <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path class=" completion-tick ${title}-completion-tick "
+                    <path class="completion-tick ${title}"
                     fill="#000000" d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,
                     3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,
                     19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,
@@ -116,8 +116,9 @@ const Render = ( () => {
                     let title = todoObj.getTitle();
                     let description = todoObj.getDescription();
                     let priority = todoObj.getPriority();
-                    appendNoteDetailsHtml(title,description,priority);
+                    appendNoteOptionsHtml(title,description,priority);
                     showPriorityofTodo(priority);
+                    PubSub.publish("project-changed");
                   }
                 })
             })();
@@ -127,20 +128,34 @@ const Render = ( () => {
             })()
 
             const onNewTodo = (() => {
-                PubSub.subscribe("todo added",(msg,data)=> {
+                PubSub.subscribe("add todo",(msg,data)=> {
                   let todoObj = data[1];
                   let title = todoObj.getTitle();
                   let description = todoObj.getDescription();
                   let priority = todoObj.getPriority();
-                  appendNoteDetailsHtml(title,description,priority);
+                  appendNoteOptionsHtml(title,description,priority);
                   showPriorityofTodo(priority);
+                  PubSub.publish("todo-added");
                 })
             })();
 
         })();
     })();
 
+    const removeTodo = (() => {
 
+      const fromProjectArea = (() => {
+        PubSub.subscribe("remove todo DOM", (msg,todo_name) => {
+          $(`.note-${todo_name}`).remove();
+        })
+      })();
+
+      const fromSidebar = (() => {
+        PubSub.subscribe("remove todo DOM",(msg,todo_name) => {
+          $(`.sidebar-note-${todo_name}`).remove();
+        })
+      })();
+    })();
 
     return {};
 } )()
