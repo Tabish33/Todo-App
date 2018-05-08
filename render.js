@@ -1,5 +1,6 @@
 const Render = ( () => {
 
+
     const viewTodoCard = (() => {
       $('.new-task-btn').click(() => {
         $(".Todo-card").css('display','grid');
@@ -7,11 +8,13 @@ const Render = ( () => {
       })
     })();
 
+
     const closeTodoCard = (() => {
       $('.close-todo-card').click(() => {
         $(".Todo-card").css('display','none');
       })
     })();
+
 
     const viewProjectCard = (() => {
       $('.new-project-btn').click(() => {
@@ -20,11 +23,13 @@ const Render = ( () => {
       })
     })();
 
+
     const closeProjectCard = (() => {
       $('.close-project-card').click(() => {
         $(".new-project-card").css('display','none');
       })
     })();
+
 
     const viewProjects = (() => {
 
@@ -36,60 +41,8 @@ const Render = ( () => {
 
     })();
 
-    const viewTodos = (() => {
 
-        const viewOnSidebar = (() => {
-          PubSub.subscribe("todo added",(msg,data) => {
-            let project_name = data[0] ,  todo_name = data[1];
-            $(`.${project_name}`).append(`<li>${todo_name}</li>`);
-          })
-        })();
-
-        const viewOnProjectArea = (() => {
-
-            const onProjectChange = (() => {
-                PubSub.subscribe("current project", (msg, curr_project_obj) => {
-                  $(".project-cards").empty();
-                  let todos = curr_project_obj.getTodos() ;
-                  for (let todo in todos){
-                    let title = todos[todo].getTitle();
-                    let description = todos[todo].getDescription();
-                    $(".project-cards").append(`
-                      <div class="note">
-                          <input type="text"  placeholder="Title" value=${title}>
-                          <textarea placeholder="Description">${description}</textarea>
-                      </div>
-                      `)
-                  }
-                })
-            })();
-
-            const onNewProject = (() => {
-                PubSub.subscribe("add project", () => { $(".project-cards").empty(); })
-            })()
-
-            const onNewTodo = (() => {
-                PubSub.subscribe("todo added",(msg,data)=> {
-                  let todoObj = data[2];
-                  $(".project-cards").append(`
-                    <div class="note">
-                        <div class="note-details">
-                          <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                            <path class="${todoObj.getTitle()}-path" class fill="#000000" d="M12,2A10,10 0 0,1 22,12A10,10
-                             0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
-                          </svg>
-                        </div>
-                        <input type="text"  placeholder="Title" value=${todoObj.getTitle()}>
-                        <textarea placeholder="Description">${todoObj.getDescription()}</textarea>
-                    </div>
-                    `)
-                })
-            })();
-
-        })();
-    })();
-
-    const showPriorityOnCreateTodoCard = (() => {
+    const showSelectedPriorityOnCreateTodoCard = (() => {
       let buttons  = document.querySelectorAll(".priorities button");
       let prev_priority_btn ;
       buttons.forEach((btn) => {
@@ -104,24 +57,89 @@ const Render = ( () => {
     })();
 
 
-    const showPriorityonCreatedTodo = (() => {
-      PubSub.subscribe("todo added",(msg,data) => {
-        let title = data[2].getTitle();
-        let priority = data[2].getPriority();
-        let indicator = $(`.${title}-path`);
+    const showPriorityofTodo = (priority) => {
 
-        if (priority == "High") {
-          indicator.css('fill','red');
-        }
-        else if (priority == "Medium") {
-          indicator.css('fill','green');
-        }
-        else {
-          indicator.css('fill','yellow');
+      if (priority == "High") {
+        $(`.${priority}:last`).css('fill','red');
+      }
+      else if (priority == "Medium") {
+        $(`.${priority}:last`).css('fill','green');
+      }
+      else {
+        $(`.${priority}:last`).css('fill','yellow');
+      }
+
+    }
+
+
+    const viewTodos = (() => {
+
+        const viewOnSidebar = (() => {
+          PubSub.subscribe("todo added",(msg,data) => {
+            let project_name = data[0] ,  todo_name = data[1].getTitle();
+            $(`.${project_name}`).append(`<li>${todo_name}</li>`);
+          })
+        })();
+
+        const appendNoteDetailsHtml = (title,description,priority) => {
+          //priority circle and task completion tick
+          $(".project-cards").append(`
+            <div class="note">
+              <div class="note-details">
+                  <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path class="priority-circle ${priority}" class
+                    fill="#000000" d="M12,2A10,10 0 0,1 22,12A10,10
+                     0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
+                  </svg>
+                  <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path class=" completion-tick ${title}-completion-tick "
+                    fill="#000000" d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,
+                    3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,
+                    19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,
+                    12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z" />
+                  </svg>
+                </div>
+                <input type="text"  placeholder="Title" value=${title}>
+                <textarea placeholder="Description">${description}</textarea>
+            </div>
+            `)
         }
 
-      })
+        const viewOnProjectArea = (() => {
+
+            const onProjectChange = (() => {
+                PubSub.subscribe("current project", (msg, curr_project_obj) => {
+                  $(".project-cards").empty();
+                  let todos = curr_project_obj.getTodos() ;
+                  for (let todo in todos){
+                    let todoObj = todos[todo];
+                    let title = todoObj.getTitle();
+                    let description = todoObj.getDescription();
+                    let priority = todoObj.getPriority();
+                    appendNoteDetailsHtml(title,description,priority);
+                    showPriorityofTodo(priority);
+                  }
+                })
+            })();
+
+            const onNewProject = (() => {
+                PubSub.subscribe("add project", () => { $(".project-cards").empty(); })
+            })()
+
+            const onNewTodo = (() => {
+                PubSub.subscribe("todo added",(msg,data)=> {
+                  let todoObj = data[1];
+                  let title = todoObj.getTitle();
+                  let description = todoObj.getDescription();
+                  let priority = todoObj.getPriority();
+                  appendNoteDetailsHtml(title,description,priority);
+                  showPriorityofTodo(priority);
+                })
+            })();
+
+        })();
     })();
+
 
 
     return {};

@@ -38,7 +38,7 @@ const Project = (project_name) => {
 
     const addTodo = (todo_name,obj) => {
       Todos[todo_name] = obj;
-      PubSub.publish("todo added",[project_name,todo_name,obj]);
+      PubSub.publish("todo added",[project_name,obj]);
     }
 
     const removeTodo = (todo_name) => {
