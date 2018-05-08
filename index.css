@@ -12,7 +12,7 @@ nav{
   grid-column: 3/-1;
   grid-row: 1/1;
   text-align: center;
-  background: #ffcccc;
+  background: #262626;
   grid-template-columns: repeat(12,8.333%);
 }
 
@@ -20,6 +20,7 @@ nav{
 nav p {
   margin: 18px;
   font-weight: bold;
+  color: white;
   font-size: 25px;
   font-family: 'Lobster', cursive;
 }
@@ -27,7 +28,7 @@ nav p {
 .sidebar{
   grid-column: 1/3;
   grid-row: 1/-1;
-  background: mistyrose;
+  background: #262626;
 }
 
 .project{
@@ -52,7 +53,7 @@ nav p {
   grid-row: 1/1;
   background: ;
   text-align: center;
-  background: #ffcccc;
+  background: #595959;
 }
 
 .New-Task button{
@@ -82,6 +83,7 @@ nav p {
   font-family: Arial;
   font-size: 15px;
   cursor: pointer;
+  color: white;
 }
 
 .project li{
@@ -91,6 +93,7 @@ nav p {
   font-family: Arial;
   font-size: 15px;
   cursor: pointer;
+  color: white;
 }
 
 .Todo-card{
@@ -172,17 +175,23 @@ textarea{
   font-weight: bold;
 }
 
-.high{
+
+.High{
   background: #ff5050;
 }
 
-.medium{
+.Medium{
   background: #009933;
 }
 
-.low{
+.Low{
   background: #cccc00;
 }
+
+.priority{
+  background: black;
+}
+
 
 .date{
   text-align: center;
@@ -261,13 +270,14 @@ button:focus{
 }
 
 .project-cards{
-  padding: 10px;
+  background: #595959;
+  padding: 22px;
   display: grid;
   grid-template-columns: repeat(auto-fit,minmax(150px,287px));
   grid-gap: 20px;
   grid-column: 1/-1;
   grid-row: 1/-1;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .note{
   max-width: 300px;
@@ -278,6 +288,14 @@ button:focus{
   flex-wrap: wrap;
   flex-direction: column;
 }
+
+.note div{
+  flex:0 1 24px;
+  background: white;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .note input {
   flex:0 1 ;
   border: 0;
