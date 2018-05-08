@@ -6,21 +6,42 @@ const todoApp = (() => {
 
     const addProject = (() => {
       $('.new-project-card button').click(() => {
-        let project_name = $('.new-project-card input').val();
-        let project = Project(project_name);
+        let project_name = getProjectName();
+        let project = createProject(project_name);
         getProjectsObj().addProject(project_name,project);
       })
     })();
 
+    const getProjectName = () => {
+      return $('.new-project-card input').val();
+    }
+
+    const createProject = (project_name) => {
+      return Project(project_name);
+    }
+
     const addTodo = (() => {
       $(".Add-Task button").click(() => {
-        let todo_title = $(".title").val();
-        let todo_descrip = $(".notes textarea").val();
-        let Todo = ToDo(todo_title,todo_descrip);
+        let todo_title = getTodoTitle();
+        let todo_descrip = getTodoDescription();
+        let todo_priority = getTodoPriority();
+        let Todo = ToDo(todo_title,todo_descrip,todo_priority);
         let curr_proj = getCurrentProject();
         getProjectsObj().getProject(curr_proj).addTodo(todo_title,Todo);
       })
     })()
+
+    const getTodoPriority = () => {
+      return $(".priority").html() ;
+    }
+
+    const getTodoTitle = () => {
+      return $(".title").val();
+    }
+
+    const getTodoDescription = () => {
+      return $(".notes textarea").val();
+    }
 
     const selectedProject = (projects) => {
       projects.forEach((project) => {
@@ -42,7 +63,6 @@ const todoApp = (() => {
       })
         selectedProject(projects);
     })();
-
 
     const getCurrentProject = () => {
       return getProjectsObj().getCurrentProject();
