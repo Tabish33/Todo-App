@@ -4,6 +4,7 @@ import {Render} from '../dist/render.js';
 
 const todoApp = (() => {
 
+
     const addProject = (() => {
       $('.new-project-card button').click(() => {
         let project_name = getProjectName();
@@ -12,36 +13,43 @@ const todoApp = (() => {
       })
     })();
 
+
     const getProjectName = () => {
       return $('.new-project-card input').val();
     }
 
+
     const createProject = (project_name) => {
       return Project(project_name);
     }
+
 
     const addTodo = (() => {
       $(".Add-Task button").click(() => {
         let todo_title = getTodoTitle();
         let todo_descrip = getTodoDescription();
         let todo_priority = getTodoPriority();
-        let Todo = ToDo(todo_title,todo_descrip,todo_priority);
         let curr_proj = getCurrentProject();
+        let Todo = ToDo(todo_title,todo_descrip,todo_priority,curr_proj);
         getProjectsObj().getProject(curr_proj).addTodo(todo_title,Todo);
       })
     })()
+
 
     const getTodoPriority = () => {
       return $(".priority").html() ;
     }
 
+
     const getTodoTitle = () => {
       return $(".title").val();
     }
 
+
     const getTodoDescription = () => {
       return $(".notes textarea").val();
     }
+
 
     const selectedProject = (projects) => {
       projects.forEach((project) => {
@@ -55,6 +63,7 @@ const todoApp = (() => {
       })
     }
 
+
     const changeProject = (() => {
       let projects = document.querySelectorAll(".project p");
       PubSub.subscribe('project added', () => {
@@ -64,15 +73,45 @@ const todoApp = (() => {
         selectedProject(projects);
     })();
 
+
     const getCurrentProject = () => {
       return getProjectsObj().getCurrentProject();
     };
 
 
-
     const getProjectsObj = () => {
       return Projects;
     }
+
+    const getTodoObj = () => {
+      return ToDo;
+    }
+
+
+    const removeTodo = (() => {
+
+        const findTodosAndCheckForRemoval = () =>{
+          let ticks = document.querySelectorAll(".completion-tick");
+          ticks.forEach((tick) => {
+            tick.onclick = (e)=> {
+              let todo_name = $(e.currentTarget).attr('class').split(" ")[1];
+              let parent =  getCurrentProject();
+              getProjectsObj().getProject(parent).removeTodo(todo_name);
+              PubSub.publish("remove todo DOM",todo_name);
+            }
+
+          })
+        }
+
+        PubSub.subscribe("todo-added",(msg)=>{
+          findTodosAndCheckForRemoval();
+        })
+
+        PubSub.subscribe("project-changed",(msg)=>{
+          findTodosAndCheckForRemoval();
+        })
+
+    })();
 
     return {};
 })();
