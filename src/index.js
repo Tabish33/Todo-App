@@ -30,7 +30,7 @@ const todoApp = (() => {
         let todo_descrip = getTodoDescription();
         let todo_priority = getTodoPriority();
         let curr_proj = getCurrentProject();
-        let Todo = ToDo(todo_title,todo_descrip,todo_priority,curr_proj);
+        let Todo = ToDo(todo_title,todo_descrip,todo_priority);
         getProjectsObj().getProject(curr_proj).addTodo(todo_title,Todo);
       })
     })()
@@ -65,19 +65,25 @@ const todoApp = (() => {
 
 
     const changeProject = (() => {
-      let projects = document.querySelectorAll(".project p");
+      //required for jumping on to newly created project
       PubSub.subscribe('project added', () => {
         let projects = document.querySelectorAll(".project p");
         selectedProject(projects);
       })
-        selectedProject(projects);
+      //required when switching to an existing project
+      let projects = document.querySelectorAll(".project p");
+      selectedProject(projects);
     })();
 
 
     const getCurrentProject = () => {
-      return getProjectsObj().getCurrentProject();
+      let curr_proj_name = getProjectsObj().getCurrentProject();
+      return curr_proj_name;
     };
 
+    const setCurrentProject = (project_name) =>{
+      getProjectsObj().setCurrentProject(project_name);
+    }
 
     const getProjectsObj = () => {
       return Projects;
@@ -90,7 +96,7 @@ const todoApp = (() => {
 
     const removeTodo = (() => {
 
-        const findTodosAndCheckForRemoval = () =>{
+        const CheckForRemovalAndRemove = () =>{
           let ticks = document.querySelectorAll(".completion-tick");
           ticks.forEach((tick) => {
             tick.onclick = (e)=> {
@@ -104,13 +110,37 @@ const todoApp = (() => {
         }
 
         PubSub.subscribe("todo-added",(msg)=>{
-          findTodosAndCheckForRemoval();
+          CheckForRemovalAndRemove();
         })
 
         PubSub.subscribe("project-changed",(msg)=>{
-          findTodosAndCheckForRemoval();
+          CheckForRemovalAndRemove();
         })
 
+    })();
+
+    const setNewCurrentProjectAfterDeletion = () => {
+      let remaining_projects = getProjectsObj().getNumberOfProjects();
+      if (remaining_projects >0) {
+        let new_current_project = $(".project:nth-last-child(2)").attr('class').split(" ")[1];
+        setCurrentProject(new_current_project);
+      }
+      else {
+        setCurrentProject(null);
+      }
+
+    }
+
+    const removeProject = (() => {
+      $(".remove-project-btn").click(() => {
+        let current_project_name = getCurrentProject();
+        getProjectsObj().removeProject(current_project_name);
+
+        setNewCurrentProjectAfterDeletion();
+
+        let projects = getProjectsObj().getProjects();
+        PubSub.publish("remove-project",[current_project_name,projects]);
+      })
     })();
 
     return {};

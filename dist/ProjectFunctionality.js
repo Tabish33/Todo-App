@@ -17,6 +17,10 @@ const Projects = ( () => {
       return projects[p_name];
     }
 
+    const getProjects = () => {
+      return projects;
+    }
+
     const setCurrentProject = (cp) => {
       current_project =   cp;
     };
@@ -25,7 +29,11 @@ const Projects = ( () => {
       return current_project;
     }
 
-    return {addProject,removeProject,getProject,setCurrentProject,getCurrentProject};
+    const getNumberOfProjects = () => {
+      return Object.keys(projects).length;
+    }
+
+    return {getNumberOfProjects,addProject,removeProject,getProject,setCurrentProject,getProjects,getCurrentProject};
 
 } )();
 
@@ -59,9 +67,8 @@ const Project = (project_name) => {
 
 
 
-const ToDo = (title="",description="",priority,parent) => {
+const ToDo = (title="",description="",priority) => {
 
-    let Parent = parent;
     let Title = title;
     let Description = description;
     let Priority = priority;
@@ -78,11 +85,8 @@ const ToDo = (title="",description="",priority,parent) => {
       return Priority;
     }
 
-    const getParent = () => {
-      return Parent;
-    }
 
-    return {getTitle,getDescription,getPriority,getParent};
+    return {getTitle,getDescription,getPriority};
 };
 
 export {Projects,Project,ToDo};

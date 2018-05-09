@@ -72,6 +72,31 @@ const Render = ( () => {
     }
 
 
+    const appendNoteHtml = (title,description,priority) => {
+      //priority circle and task completion tick
+      $(".project-cards").append(`
+        <div class="note note-${title}" >
+          <div class="note-options">
+              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                <path class="priority-circle ${priority}" class
+                fill="#000000" d="M12,2A10,10 0 0,1 22,12A10,10
+                 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
+              </svg>
+              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                <path class="completion-tick ${title}"
+                fill="#000000" d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,
+                3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,
+                19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,
+                12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z" />
+              </svg>
+            </div>
+            <input type="text"  placeholder="Title" value=${title}>
+            <textarea placeholder="Description">${description}</textarea>
+        </div>
+        `)
+    }
+
+
     const viewTodos = (() => {
 
         const viewOnSidebar = (() => {
@@ -81,29 +106,7 @@ const Render = ( () => {
           })
         })();
 
-        const appendNoteOptionsHtml = (title,description,priority) => {
-          //priority circle and task completion tick
-          $(".project-cards").append(`
-            <div class="note note-${title}" >
-              <div class="note-options">
-                  <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path class="priority-circle ${priority}" class
-                    fill="#000000" d="M12,2A10,10 0 0,1 22,12A10,10
-                     0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
-                  </svg>
-                  <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path class="completion-tick ${title}"
-                    fill="#000000" d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,
-                    3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,
-                    19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,
-                    12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z" />
-                  </svg>
-                </div>
-                <input type="text"  placeholder="Title" value=${title}>
-                <textarea placeholder="Description">${description}</textarea>
-            </div>
-            `)
-        }
+
 
         const viewOnProjectArea = (() => {
 
@@ -116,7 +119,7 @@ const Render = ( () => {
                     let title = todoObj.getTitle();
                     let description = todoObj.getDescription();
                     let priority = todoObj.getPriority();
-                    appendNoteOptionsHtml(title,description,priority);
+                    appendNoteHtml(title,description,priority);
                     showPriorityofTodo(priority);
                     PubSub.publish("project-changed");
                   }
@@ -133,7 +136,7 @@ const Render = ( () => {
                   let title = todoObj.getTitle();
                   let description = todoObj.getDescription();
                   let priority = todoObj.getPriority();
-                  appendNoteOptionsHtml(title,description,priority);
+                  appendNoteHtml(title,description,priority);
                   showPriorityofTodo(priority);
                   PubSub.publish("todo-added");
                 })
@@ -144,18 +147,44 @@ const Render = ( () => {
 
     const removeTodo = (() => {
 
-      const fromProjectArea = (() => {
-        PubSub.subscribe("remove todo DOM", (msg,todo_name) => {
-          $(`.note-${todo_name}`).remove();
-        })
-      })();
+        const fromProjectArea = (() => {
+          PubSub.subscribe("remove todo DOM", (msg,todo_name) => {
+            $(`.note-${todo_name}`).remove();
+          })
+        })();
 
-      const fromSidebar = (() => {
-        PubSub.subscribe("remove todo DOM",(msg,todo_name) => {
-          $(`.sidebar-note-${todo_name}`).remove();
-        })
-      })();
+        const fromSidebar = (() => {
+          PubSub.subscribe("remove todo DOM",(msg,todo_name) => {
+            $(`.sidebar-note-${todo_name}`).remove();
+          })
+        })();
+
     })();
+
+    const getNumberOfProjects = () => {
+      return $(".sidebar").children().length;
+    }
+
+    
+
+    const removeProject = (() => {
+      PubSub.subscribe("remove-project", (msg,data)=> {
+        let proj_to_delete = data[0];
+        let projects = data[1];
+        $(`.sidebar .${proj_to_delete}`).remove();
+        let remaining_projects = getNumberOfProjects();
+        if (remaining_projects >0 ) {
+          let new_current_project = $(".project:last").attr('class').split(" ")[1];
+          let curr_proj_obj = projects[new_current_project];
+          PubSub.publish("current project",curr_proj_obj);
+        }
+        else{
+          $(".project-cards").empty();
+        }
+      })
+
+    })();
+
 
     return {};
 } )()
