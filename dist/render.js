@@ -1,32 +1,39 @@
 const Render = ( () => {
 
+    const closeTodoCard = () => {
+      $(".Todo-card").removeClass("animate");
+    }
+
+    const closeProjectCard = () => {
+      $(".new-project-card").removeClass("animate");
+    }
 
     const viewTodoCard = (() => {
       $('.new-task-btn').click(() => {
-        $(".Todo-card").css('display','grid');
-        $(".new-project-card").css('display','none');
+        $(".Todo-card").addClass("animate");
+        closeProjectCard();
       })
     })();
 
 
-    const closeTodoCard = (() => {
+    const closeTodoCardOnCloseBtn = (() => {
       $('.close-todo-card').click(() => {
-        $(".Todo-card").css('display','none');
+        $(".Todo-card").removeClass("animate");
       })
     })();
 
 
     const viewProjectCard = (() => {
       $('.new-project-btn').click(() => {
-        $(".new-project-card").css('display','grid');
-        $(".Todo-card").css('display','none');
+        $(".new-project-card").addClass("animate");
+        closeTodoCard();
       })
     })();
 
 
-    const closeProjectCard = (() => {
+    const closeProjectCardOnCloseBtn = (() => {
       $('.close-project-card').click(() => {
-        $(".new-project-card").css('display','none');
+        $(".new-project-card").removeClass("animate");
       })
     })();
 
@@ -34,9 +41,10 @@ const Render = ( () => {
     const viewProjects = (() => {
 
       PubSub.subscribe('add project',(msg,p_name)=>{
-        $(".sidebar").append(`<div class="project ${p_name}"><p
+        $(".sidebar").append(`<div class="project ${p_name}"><p tabindex="0"
                                 >${p_name}</p></div>`);
         PubSub.publish("project added");
+        closeProjectCard();
       })
 
     })();
@@ -121,8 +129,12 @@ const Render = ( () => {
                     let priority = todoObj.getPriority();
                     appendNoteHtml(title,description,priority);
                     showPriorityofTodo(priority);
-                    PubSub.publish("project-changed");
+                    setTimeout( ()=> {
+                      $(`.note-${title}`).addClass("animate");
+                      PubSub.publish("project-changed"); },30 )
+
                   }
+
                 })
             })();
 
@@ -138,7 +150,11 @@ const Render = ( () => {
                   let priority = todoObj.getPriority();
                   appendNoteHtml(title,description,priority);
                   showPriorityofTodo(priority);
-                  PubSub.publish("todo-added");
+                  setTimeout( ()=> {
+                    closeTodoCard();
+                    $(".note:last").addClass("animate");
+                    PubSub.publish("todo-added"); },30 )
+
                 })
             })();
 
@@ -149,7 +165,8 @@ const Render = ( () => {
 
         const fromProjectArea = (() => {
           PubSub.subscribe("remove todo DOM", (msg,todo_name) => {
-            $(`.note-${todo_name}`).remove();
+            $(`.note-${todo_name}`).removeClass("animate");
+            setTimeout( ()=> { $(`.note-${todo_name}`).remove(); },400 )
           })
         })();
 
@@ -165,7 +182,7 @@ const Render = ( () => {
       return $(".sidebar").children().length;
     }
 
-    
+
 
     const removeProject = (() => {
       PubSub.subscribe("remove-project", (msg,data)=> {
@@ -184,7 +201,6 @@ const Render = ( () => {
       })
 
     })();
-
 
     return {};
 } )()

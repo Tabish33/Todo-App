@@ -83,6 +83,7 @@ const todoApp = (() => {
 
     const setCurrentProject = (project_name) =>{
       getProjectsObj().setCurrentProject(project_name);
+      PubSub.publish("current project changed",project_name);
     }
 
     const getProjectsObj = () => {
@@ -122,8 +123,10 @@ const todoApp = (() => {
     const setNewCurrentProjectAfterDeletion = () => {
       let remaining_projects = getProjectsObj().getNumberOfProjects();
       if (remaining_projects >0) {
-        let new_current_project = $(".project:nth-last-child(2)").attr('class').split(" ")[1];
+        let projects = getProjectsObj().getProjects();
+        let new_current_project = Object.keys(projects)[Object.keys(projects).length -1]
         setCurrentProject(new_current_project);
+        PubSub.publish("current project changed",new_current_project);
       }
       else {
         setCurrentProject(null);
