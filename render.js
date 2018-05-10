@@ -50,6 +50,28 @@ const Render = ( () => {
     })();
 
 
+    const getNumberOfProjects = () => {
+      return $(".sidebar").children().length;
+    }
+
+
+    const displayOrHideButtons = () => {
+      if (getNumberOfProjects() == 0) {
+        $(".new-task-btn").hide();
+        $(".remove-project-btn").hide();
+      }
+      else {
+        $(".new-task-btn").show();
+        $(".remove-project-btn").show();
+      }
+    };
+
+    const buttonsVisibility = (() => {
+        displayOrHideButtons();
+        PubSub.subscribe("add project", ()=> { displayOrHideButtons(); })
+        PubSub.subscribe("project removed",()=> { displayOrHideButtons(); } )
+    })();
+
     const showSelectedPriorityOnCreateTodoCard = (() => {
       let buttons  = document.querySelectorAll(".priorities button");
       let prev_priority_btn ;
@@ -178,10 +200,6 @@ const Render = ( () => {
 
     })();
 
-    const getNumberOfProjects = () => {
-      return $(".sidebar").children().length;
-    }
-
 
 
     const removeProject = (() => {
@@ -198,6 +216,7 @@ const Render = ( () => {
         else{
           $(".project-cards").empty();
         }
+        PubSub.publish("project removed");
       })
 
     })();
