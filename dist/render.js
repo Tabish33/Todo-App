@@ -37,6 +37,14 @@ const Render = ( () => {
       })
     })();
 
+    const clearTodoCard = () => {
+          $(".title").val("");
+          $("textarea").val("");
+        }
+
+    const clearProjectCard = () => {
+          $(".projecttitle").val("");
+        }
 
     const viewProjects = (() => {
 
@@ -44,6 +52,7 @@ const Render = ( () => {
         $(".sidebar").append(`<div class="project ${p_name}"><p tabindex="0"
                                 >${p_name}</p></div>`);
         PubSub.publish("project added");
+        clearProjectCard();
         closeProjectCard();
       })
 
@@ -100,6 +109,7 @@ const Render = ( () => {
       }
 
     }
+
 
 
     const appendNoteHtml = (title,description,priority) => {
@@ -172,6 +182,7 @@ const Render = ( () => {
                   let priority = todoObj.getPriority();
                   appendNoteHtml(title,description,priority);
                   showPriorityofTodo(priority);
+                  clearTodoCard();
                   setTimeout( ()=> {
                     closeTodoCard();
                     $(".note:last").addClass("animate");
@@ -220,6 +231,7 @@ const Render = ( () => {
       })
 
     })();
+
 
     return {};
 } )()
