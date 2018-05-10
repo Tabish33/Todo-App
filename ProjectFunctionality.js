@@ -23,6 +23,7 @@ const Projects = ( () => {
 
     const setCurrentProject = (cp) => {
       current_project =   cp;
+      PubSub.publish("highlight current project",cp);
     };
 
     const getCurrentProject = () => {
