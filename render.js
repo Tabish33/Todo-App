@@ -49,7 +49,7 @@ const Render = ( () => {
     const viewProjects = (() => {
 
       PubSub.subscribe('add project',(msg,p_name)=>{
-        $(".sidebar").append(`<div class="project ${p_name}"><p tabindex="0"
+        $(".sidebar").append(`<div class="project ${formatName(p_name)}"><p tabindex="0"
                                 >${p_name}</p></div>`);
         PubSub.publish("project added");
         clearProjectCard();
@@ -110,10 +110,16 @@ const Render = ( () => {
 
     }
 
+    const formatName = (name) => {
+      return name.split(" ").join("-");
+    }
 
+    const unFormatName = (name) => {
+      return name.split("-").join(" ");
+    }
 
     const appendNoteHtml = (title,description,priority) => {
-      //priority circle and task completion tick
+
       $(".project-cards").append(`
         <div class="note note-${title}" >
           <div class="note-options">
@@ -134,15 +140,15 @@ const Render = ( () => {
             <textarea placeholder="Description">${description}</textarea>
         </div>
         `)
-    }
 
+    }
 
     const viewTodos = (() => {
 
         const viewOnSidebar = (() => {
           PubSub.subscribe("add todo",(msg,data) => {
-            let project_name = data[0] ,  todo_name = data[1].getTitle();
-            $(`.${project_name}`).append(`<li class= "sidebar-note-${todo_name}">${todo_name}</li>`);
+            let project_name = formatName(data[0]) ,  todo_name = data[1].getTitle();
+            $(`.${project_name}`).append(`<li class= "sidebar-note-${formatName(todo_name)}">${todo_name}</li>`);
           })
         })();
 
@@ -153,10 +159,11 @@ const Render = ( () => {
             const onProjectChange = (() => {
                 PubSub.subscribe("current project", (msg, curr_project_obj) => {
                   $(".project-cards").empty();
+  //                console.log(curr_project_obj.getName());
                   let todos = curr_project_obj.getTodos() ;
                   for (let todo in todos){
                     let todoObj = todos[todo];
-                    let title = todoObj.getTitle();
+                    let title = formatName(todoObj.getTitle()) ;
                     let description = todoObj.getDescription();
                     let priority = todoObj.getPriority();
                     appendNoteHtml(title,description,priority);
@@ -177,7 +184,7 @@ const Render = ( () => {
             const onNewTodo = (() => {
                 PubSub.subscribe("add todo",(msg,data)=> {
                   let todoObj = data[1];
-                  let title = todoObj.getTitle();
+                  let title = formatName(todoObj.getTitle());
                   let description = todoObj.getDescription();
                   let priority = todoObj.getPriority();
                   appendNoteHtml(title,description,priority);
@@ -198,6 +205,7 @@ const Render = ( () => {
 
         const fromProjectArea = (() => {
           PubSub.subscribe("remove todo DOM", (msg,todo_name) => {
+            todo_name = formatName(todo_name);
             $(`.note-${todo_name}`).removeClass("animate");
             setTimeout( ()=> { $(`.note-${todo_name}`).remove(); },400 )
           })
@@ -205,6 +213,7 @@ const Render = ( () => {
 
         const fromSidebar = (() => {
           PubSub.subscribe("remove todo DOM",(msg,todo_name) => {
+            todo_name = formatName(todo_name);
             $(`.sidebar-note-${todo_name}`).remove();
           })
         })();
@@ -215,7 +224,7 @@ const Render = ( () => {
 
     const removeProject = (() => {
       PubSub.subscribe("remove-project", (msg,data)=> {
-        let proj_to_delete = data[0];
+        let proj_to_delete = formatName(data[0]);
         let projects = data[1];
         $(`.sidebar .${proj_to_delete}`).remove();
         let remaining_projects = getNumberOfProjects();
